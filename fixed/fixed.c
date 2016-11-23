@@ -35,12 +35,14 @@ tp_init(
   }
 }
 
+
 static PyObject*
 tp_repr(
   Fixed* obj)
 {
   return PyUnicode_FromFormat("Fixed(%u, %d)", obj->whole, obj->fractional);
 }
+
 
 static PyObject*
 tp_str(
@@ -51,6 +53,7 @@ tp_str(
   snprintf(buffer, sizeof(buffer), "%.11f", val);
   return PyUnicode_FromString(buffer);
 }
+
 
 PyTypeObject
 type = {
