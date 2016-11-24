@@ -1,2 +1,3 @@
 build/
 fixed/*.so
+__pycache__

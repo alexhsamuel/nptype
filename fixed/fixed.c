@@ -108,27 +108,13 @@ type = {
     (destructor)          NULL,                           // tp_finalize
 };
 
-static PyModuleDef 
-module_def = {
-    PyModuleDef_HEAD_INIT,
-    "ext",
-    "Example module that creates an extension type.",
-    -1,
-    NULL, NULL, NULL, NULL, NULL
-};
-
-PyMODINIT_FUNC
-PyInit_ext()
+void
+add_Fixed_to_module(
+  PyObject* module)
 {
-  PyObject* module;
   type.tp_new = PyType_GenericNew;
   if (PyType_Ready(&type) < 0)
-    return NULL;
-  module = PyModule_Create(&module_def);
-  if (module == NULL)
-    return NULL;
-
+    return;
   Py_INCREF(&type);
   PyModule_AddObject(module, "Fixed", (PyObject*) &type);
-  return module;
 }
