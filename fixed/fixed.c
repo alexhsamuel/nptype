@@ -1,20 +1,14 @@
 #include <Python.h>
 
-#if 0
-#define PY_ARRAY_UNIQUE_SYMBOL nptype
-#define NO_IMPORT_ARRAY
-#define NPY_NO_DEPRECATED_API NPY_API_VERSION
+#include "fixed.h"
 
-#include <numpy/arrayobject.h>
-#include <numpy/npy_3kcompat.h>
-#endif
+//------------------------------------------------------------------------------
 
 double const SCALE = 1.0 / (1l << 32);
 
 typedef struct {
   PyObject_HEAD
-  int whole;
-  unsigned int fractional;
+  struct Fixed fixed;
 } Fixed;
 
 
@@ -29,8 +23,8 @@ tp_init(
   if (! PyArg_ParseTuple(args, "iI", &whole, &fractional))
     return -1;
   else {
-    self->whole = whole;
-    self->fractional = fractional;
+    self->fixed.whole = whole;
+    self->fixed.fractional = fractional;
     return 0;
   }
 }
@@ -40,7 +34,8 @@ static PyObject*
 tp_repr(
   Fixed* obj)
 {
-  return PyUnicode_FromFormat("Fixed(%u, %d)", obj->whole, obj->fractional);
+  return PyUnicode_FromFormat(
+    "Fixed(%u, %d)", obj->fixed.whole, obj->fixed.fractional);
 }
 
 
@@ -48,7 +43,7 @@ static PyObject*
 tp_str(
   Fixed* obj)
 {
-  double const val = obj->whole + obj->fractional * SCALE;
+  double const val = obj->fixed.whole + obj->fixed.fractional * SCALE;
   char buffer[32];
   snprintf(buffer, sizeof(buffer), "%.11f", val);
   return PyUnicode_FromString(buffer);
@@ -56,7 +51,7 @@ tp_str(
 
 
 PyTypeObject
-type = {
+Fixed_type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     (char const*)         "Fixed",                        // tp_name
     (Py_ssize_t)          sizeof(Fixed) ,                 // tp_basicsize
@@ -108,13 +103,3 @@ type = {
     (destructor)          NULL,                           // tp_finalize
 };
 
-void
-add_Fixed_to_module(
-  PyObject* module)
-{
-  type.tp_new = PyType_GenericNew;
-  if (PyType_Ready(&type) < 0)
-    return;
-  Py_INCREF(&type);
-  PyModule_AddObject(module, "Fixed", (PyObject*) &type);
-}
