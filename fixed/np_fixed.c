@@ -19,7 +19,7 @@ PyArray_Descr*
 descr;
 
 void
-copyswap(
+arr_copyswap(
   struct Fixed* const dst,
   struct Fixed const* const src,
   int const swap,
@@ -35,7 +35,7 @@ copyswap(
 
 /*
 void
-copyswapn(
+arr_copyswapn(
   struct Fixed* const dst,
   npy_intp const dst_stride,
   struct Fixed const* const src,
@@ -48,38 +48,36 @@ copyswapn(
 */
 
 PyObject*
-getitem(
+arr_getitem(
   struct Fixed const* const data,
   PyArrayObject* const arr)
 {
   PyFixed* const obj = (PyFixed*) Fixed_type.tp_alloc(&Fixed_type, 0);
   obj->fixed = *data;
-  fprintf(stderr, "getitem: obj->fixed = %u %d\n", obj->fixed.whole, obj->fixed.fractional);
   return (PyObject*) obj;
 }
 
 int
-setitem(
+arr_setitem(
   PyObject* item,
   struct Fixed* const data,
   PyArrayObject* const arr)
 {
   if (!PyObject_IsInstance(item, (PyObject*) &Fixed_type)) {
-    PyErr_SetString(PyExc_TypeError, "setitem: can't set value; not a Fixed");
+    PyErr_SetString(PyExc_TypeError, "arr_setitem: can't set value; not a Fixed");
     return -1;
   }
   *data = ((PyFixed*) item)->fixed;
-  fprintf(stderr, "setitem: data = %u %d\n", data->whole, data->fractional);
   return 0;
 }
 
-int
-compare(
+static int
+arr_compare(
   struct Fixed const* const lhs,
   struct Fixed const* const rhs,
   PyArrayObject* const arr)
 {
-  return 0; // FIXME
+  return compare(lhs, rhs);
 }
 
 PyArray_Descr*
@@ -89,11 +87,11 @@ get_Fixed_descr()
   if (descr == NULL) {
     static PyArray_ArrFuncs arr_funcs;
     PyArray_InitArrFuncs(&arr_funcs);
-    arr_funcs.copyswap  = (PyArray_CopySwapFunc*) copyswap;
- // arr_funcs.copyswapn = (PyArray_CopySwapNFunc*) copyswapn;
-    arr_funcs.getitem   = (PyArray_GetItemFunc*) getitem;
-    arr_funcs.setitem   = (PyArray_SetItemFunc*) setitem;
-    arr_funcs.compare   = (PyArray_CompareFunc*) compare;
+    arr_funcs.copyswap  = (PyArray_CopySwapFunc*) arr_copyswap;
+ // arr_funcs.copyswapn = (PyArray_CopySwapNFunc*) arr_copyswapn;
+    arr_funcs.getitem   = (PyArray_GetItemFunc*) arr_getitem;
+    arr_funcs.setitem   = (PyArray_SetItemFunc*) arr_setitem;
+    arr_funcs.compare   = (PyArray_CompareFunc*) arr_compare;
 
     descr = PyObject_New(PyArray_Descr, &PyArrayDescr_Type);
     Py_INCREF((PyObject*) &Fixed_type);

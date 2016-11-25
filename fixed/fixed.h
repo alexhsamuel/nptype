@@ -15,3 +15,5 @@ typedef struct {
   struct Fixed fixed;
 } PyFixed;
 
+extern int compare(struct Fixed const* lhs, struct Fixed const* rhs);
+

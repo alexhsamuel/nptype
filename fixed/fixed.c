@@ -6,6 +6,22 @@
 
 double const SCALE = 1.0 / (1l << 32);
 
+int
+compare(
+  struct Fixed const* const lhs,
+  struct Fixed const* const rhs)
+{
+  return
+      lhs->whole        < rhs->whole        ? -1
+    : lhs->whole        > rhs->whole        ?  1
+    : lhs->fractional   < rhs->fractional   ? -1
+    : lhs->fractional   > rhs->fractional   ?  1
+    :                                          0;
+}
+
+
+//------------------------------------------------------------------------------
+
 static int
 tp_init(
   PyFixed* self, 
