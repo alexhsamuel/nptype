@@ -25,8 +25,12 @@ copyswap(
   int const swap,
   PyArrayObject* const arr)
 {
-  dst->whole = __builtin_bswap32(src->whole);
-  dst->fractional = __builtin_bswap32(src->fractional);
+  if (swap) {
+    dst->whole = __builtin_bswap32(src->whole);
+    dst->fractional = __builtin_bswap32(src->fractional);
+  }
+  else 
+    *dst = *src;
 }
 
 /*
@@ -48,7 +52,10 @@ getitem(
   struct Fixed const* const data,
   PyArrayObject* const arr)
 {
-  return Py_None;
+  PyFixed* const obj = (PyFixed*) Fixed_type.tp_alloc(&Fixed_type, 0);
+  obj->fixed = *data;
+  fprintf(stderr, "getitem: obj->fixed = %u %d\n", obj->fixed.whole, obj->fixed.fractional);
+  return (PyObject*) obj;
 }
 
 int
@@ -57,7 +64,13 @@ setitem(
   struct Fixed* const data,
   PyArrayObject* const arr)
 {
-  return 0;  // FIXME
+  if (!PyObject_IsInstance(item, (PyObject*) &Fixed_type)) {
+    PyErr_SetString(PyExc_TypeError, "setitem: can't set value; not a Fixed");
+    return -1;
+  }
+  *data = ((PyFixed*) item)->fixed;
+  fprintf(stderr, "setitem: data = %u %d\n", data->whole, data->fractional);
+  return 0;
 }
 
 int

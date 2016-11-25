@@ -10,3 +10,8 @@ struct Fixed {
 extern PyTypeObject
 Fixed_type;
 
+typedef struct {
+  PyObject_HEAD
+  struct Fixed fixed;
+} PyFixed;
+

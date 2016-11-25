@@ -41,21 +41,18 @@ PyInit_ext()
   PyModule_AddObject(module, "Fixed", (PyObject*) &Fixed_type);
 
   // Import numpy stuff.
-  fprintf(stderr, "importing array\n");
   if (_import_array() < 0) 
     return NULL;
-  fprintf(stderr, "importing umath\n");
   if (_import_umath() < 0) 
     return NULL;
 
   // Attach the numpy dtype.
-  fprintf(stderr, "building desdcriptor\n");
   PyArray_Descr* Fixed_descr = get_Fixed_descr();
   if (Fixed_descr == NULL)
     return NULL;
-  fprintf(stderr, "setting descriptor\n");
   PyDict_SetItemString(Fixed_type.tp_dict, "dtype", (PyObject*) Fixed_descr);
 
   return module;
 }
+
 

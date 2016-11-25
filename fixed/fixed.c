@@ -6,15 +6,9 @@
 
 double const SCALE = 1.0 / (1l << 32);
 
-typedef struct {
-  PyObject_HEAD
-  struct Fixed fixed;
-} Fixed;
-
-
 static int
 tp_init(
-  Fixed* self, 
+  PyFixed* self, 
   PyObject* args, 
   PyObject* kwds)
 {
@@ -32,7 +26,7 @@ tp_init(
 
 static PyObject*
 tp_repr(
-  Fixed* obj)
+  PyFixed* obj)
 {
   return PyUnicode_FromFormat(
     "Fixed(%u, %d)", obj->fixed.whole, obj->fixed.fractional);
@@ -41,7 +35,7 @@ tp_repr(
 
 static PyObject*
 tp_str(
-  Fixed* obj)
+  PyFixed* obj)
 {
   double const val = obj->fixed.whole + obj->fixed.fractional * SCALE;
   char buffer[32];
@@ -54,7 +48,7 @@ PyTypeObject
 Fixed_type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     (char const*)         "Fixed",                        // tp_name
-    (Py_ssize_t)          sizeof(Fixed) ,                 // tp_basicsize
+    (Py_ssize_t)          sizeof(PyFixed),                // tp_basicsize
     (Py_ssize_t)          0,                              // tp_itemsize
     (destructor)          NULL,                           // tp_dealloc
     (printfunc)           NULL,                           // tp_print
