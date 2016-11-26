@@ -33,20 +33,6 @@ arr_copyswap(
     *dst = *src;
 }
 
-/*
-void
-arr_copyswapn(
-  struct Fixed* const dst,
-  npy_intp const dst_stride,
-  struct Fixed const* const src,
-  npy_intp const src_stride,
-  npy_intp const n,
-  int const swap,
-  PyArrayObject* const arr)
-{
-}
-*/
-
 PyObject*
 arr_getitem(
   struct Fixed const* const data,
@@ -88,7 +74,6 @@ get_Fixed_descr()
     static PyArray_ArrFuncs arr_funcs;
     PyArray_InitArrFuncs(&arr_funcs);
     arr_funcs.copyswap  = (PyArray_CopySwapFunc*) arr_copyswap;
- // arr_funcs.copyswapn = (PyArray_CopySwapNFunc*) arr_copyswapn;
     arr_funcs.getitem   = (PyArray_GetItemFunc*) arr_getitem;
     arr_funcs.setitem   = (PyArray_SetItemFunc*) arr_setitem;
     arr_funcs.compare   = (PyArray_CompareFunc*) arr_compare;
