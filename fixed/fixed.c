@@ -11,6 +11,8 @@ compare(
   struct Fixed const* const lhs,
   struct Fixed const* const rhs)
 {
+  fprintf(stderr, "%d.%u <> %d.%u\n", lhs->whole, lhs->fractional,
+          rhs->whole, rhs->fractional);
   return
       lhs->whole        < rhs->whole        ? -1
     : lhs->whole        > rhs->whole        ?  1

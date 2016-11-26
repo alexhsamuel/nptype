@@ -1,4 +1,6 @@
 import numpy as np
+import sys
+
 from   fixed import Fixed
 
 #-------------------------------------------------------------------------------
@@ -16,7 +18,9 @@ def test_compare0():
         Fixed(10, 0),
         Fixed(10, 1 << 29)
     ], dtype=Fixed.dtype)
-    assert list(a <  Fixed(10, 0)) == [ True, False, False]
-    assert list(a <= Fixed(10, 0)) == [ True,  True, False]
+    f = Fixed(10, 0)
+    assert list(a <  f) == [ True, False, False]
+    assert list(a <= f) == [ True,  True, False]
+    assert list(a == f) == [False,  True, False]
 
 
