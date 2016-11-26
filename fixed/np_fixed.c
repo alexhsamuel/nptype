@@ -18,7 +18,7 @@
 PyArray_Descr*
 descr;
 
-void
+static void
 arr_copyswap(
   struct Fixed* const dst,
   struct Fixed const* const src,
@@ -33,7 +33,7 @@ arr_copyswap(
     *dst = *src;
 }
 
-PyObject*
+static PyObject*
 arr_getitem(
   struct Fixed const* const data,
   PyArrayObject* const arr)
@@ -43,7 +43,7 @@ arr_getitem(
   return (PyObject*) obj;
 }
 
-int
+static int
 arr_setitem(
   PyObject* item,
   struct Fixed* const data,
